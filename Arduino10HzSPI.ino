@@ -196,21 +196,6 @@ void readMag(float &mx, float &my, float &mz)
 	mz = m_sens_z[0] * mrx + m_sens_z[1] * mry + m_sens_z[2] * mrz;
 }
 
-float smoothAngle(float current, float target, float alpha)
-{
-    float error = target - current;
-
-    if (error > 180)  error -= 360;
-    if (error < -180) error += 360;
-
-    current += alpha * error;
-
-    if (current >= 360) current -= 360;
-    if (current < 0)    current += 360;
-
-    return current;
-}
-
 // =============================
 
 void setup()
@@ -463,9 +448,17 @@ void loop()
       */
     }
        
+    
+    // Uncomment the following block if you want to apply the optional smoothing
+    /*
     // ---- Optional smoothing ----
-    //heading_smoothed = smoothAngle(heading_smoothed, yaw_gyro, 0.1);
-    //Serial.println(heading_smoothed);
+    float h_correction = shortestAngle(yaw_gyro, heading_smoothed);
+    heading_smoothed = fmod(heading_smoothed + 0.1 * h_correction, 360.0f);
+    if(heading_smoothed < 0.0f) heading_smoothed += 360.0f;
+    Serial.println(heading_smoothed);
+    */
+
+    // Comment this line if you have chosen the optional smoothing
     Serial.println(yaw_gyro);
 
   }
